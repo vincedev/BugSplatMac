@@ -24,6 +24,12 @@
 /// @name Additional meta data
 ///-----------------------------------------------------------------------------
 
+/** Returns the application name to use by the crash manager
+ *
+ * @param crashManager The `BITCrashManager` instance invoking this delegate
+ */
+-(NSString *)applicationNameForCrashManager:(BITCrashManager *)crashManager;
+
 /** Return any log string based data the crash report being processed should contain
  *
  * @param crashManager The `BITCrashManager` instance invoking this delegate

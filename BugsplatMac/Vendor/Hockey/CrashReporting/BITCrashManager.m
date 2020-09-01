@@ -1292,7 +1292,15 @@ __attribute__((noreturn)) static void uncaught_cxx_exception_handler(const BITCr
 #pragma mark - GetterSetter
 
 - (NSString *)applicationName {
-    NSString *applicationName = [[[NSBundle mainBundle] localizedInfoDictionary] valueForKey: @"CFBundleExecutable"];
+    NSString *applicationName = nil;
+
+    if ([self.delegate respondsToSelector:@selector(applicationNameForCrashManager:)]) {
+        applicationName = [self.delegate applicationNameForCrashManager:self];
+    }
+
+    if (!applicationName) {
+        applicationName = [[[NSBundle mainBundle] localizedInfoDictionary] valueForKey: @"CFBundleExecutable"];
+    }
 
     if (!applicationName)
         applicationName = [[[NSBundle mainBundle] infoDictionary] valueForKey: @"CFBundleExecutable"];
