@@ -16,6 +16,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 
+/** Return the application to use for the crash report being processed
+ *
+ * @param bugsplatStartupManager The `BugsplatStartupManager` instance invoking this delegate
+ */
+- (NSString *)applicationNameForBugsplatStartupManager:(BugsplatStartupManager *)bugsplatStartupManager;
+
 /** Return any log string based data the crash report being processed should contain
  *
  * @param bugsplatStartupManager The `BugsplatStartupManager` instance invoking this delegate

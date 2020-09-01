@@ -134,6 +134,15 @@ NSString *const kHockeyIdentifierPlaceholder = @"b0cf675cb9334a3e96eda0764f95e38
 
 #pragma mark - BITHockeyManagerDelegate
 
+- (NSString *)applicationNameForCrashManager:(BITCrashManager *)crashManager {
+    if ([_delegate respondsToSelector:@selector(applicationNameForBugsplatStartupManager:)])
+    {
+        return [_delegate applicationNameForBugsplatStartupManager:self];
+    }
+
+    return nil;
+}
+
 - (NSString *)applicationLogForCrashManager:(BITCrashManager *)crashManager
 {
     if ([_delegate respondsToSelector:@selector(applicationLogForBugsplatStartupManager:)])
