@@ -119,6 +119,7 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
 
   // start CrashManager
   if (![self isCrashManagerDisabled]) {
+    NSLog(@"DEBUG: Start CrashManager. %s, %d", __PRETTY_FUNCTION__, __LINE__);
     BITHockeyLogDebug(@"INFO: Start CrashManager");
     [self.crashManager startManager];
   }

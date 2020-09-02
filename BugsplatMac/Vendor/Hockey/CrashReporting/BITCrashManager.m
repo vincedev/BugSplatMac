@@ -870,6 +870,7 @@ __attribute__((noreturn)) static void uncaught_cxx_exception_handler(const BITCr
 
 - (void)startManager {
     if (!self.crashManagerActivated) {
+        NSLog(@"DEBUG: CrashManager not activated. %s, %d", __PRETTY_FUNCTION__, __LINE__);
         return;
     }
 
@@ -891,6 +892,7 @@ __attribute__((noreturn)) static void uncaught_cxx_exception_handler(const BITCr
 
         // Check if we previously crashed
         if ([self.plCrashReporter hasPendingCrashReport]) {
+            NSLog(@"DEBUG: Has pending crash report. %s, %d", __PRETTY_FUNCTION__, __LINE__);
             self.didCrashInLastSession = YES;
             [self handleCrashReport];
         }
