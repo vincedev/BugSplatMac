@@ -113,6 +113,7 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
   NSURL *appSupportURL = [[fileManager URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
   bit_fixBackupAttributeForURL(appSupportURL);
 
+  NSLog(@"DEBUG: Starting HockeyManager. %s, %d", __PRETTY_FUNCTION__, __LINE__);
   BITHockeyLogDebug(@"INFO: Starting HockeyManager");
   self.startManagerIsInvoked = YES;
 
@@ -143,6 +144,7 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
     _delegate = delegate;
 
     if (self.crashManager) {
+      NSLog(@"DEBUG: Set delegate. %s, %d", __PRETTY_FUNCTION__, __LINE__);
       self.crashManager.delegate = delegate;
     }
   }
@@ -216,6 +218,7 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
 
   self.startManagerIsInvoked = NO;
 
+  NSLog(@"DEBUG: Setup CrashManager. %s, %d", __PRETTY_FUNCTION__, __LINE__);
   BITHockeyLogDebug(@"INFO: Setup CrashManager");
   self.crashManager = [[BITCrashManager alloc] initWithAppIdentifier:self.appIdentifier
                                                  hockeyAppClient:[self hockeyAppClient]];
