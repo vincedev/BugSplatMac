@@ -28,12 +28,12 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
 + (BITHockeyManager *)sharedHockeyManager {
   static BITHockeyManager *sharedInstance = nil;
   static dispatch_once_t pred;
-  
+
   dispatch_once(&pred, ^{
     sharedInstance = [BITHockeyManager alloc];
     sharedInstance = [sharedInstance init];
   });
-  
+
   return sharedInstance;
 }
 
@@ -42,7 +42,7 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
     _serverURL = nil;
     _delegate = nil;
     self.hockeyAppClient = nil;
-    
+
     self.startManagerIsInvoked = NO;
   }
   return self;
@@ -50,7 +50,7 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
 
 - (void)dealloc {
   self.appIdentifier = nil;
-  
+
 }
 
 
@@ -59,22 +59,22 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
 - (BOOL)isSetUpOnMainThread {
   if (!NSThread.isMainThread) {
     NSAssert(NSThread.isMainThread, @"ERROR: This SDK has to be setup on the main thread!");
-    
+
     return NO;
   }
-  
+
   return YES;
 }
 
 - (BOOL)checkValidityOfAppIdentifier:(NSString *)identifier {
   BOOL result = NO;
-  
+
   if (identifier) {
     NSCharacterSet *hexSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789abcdef"];
     NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:identifier];
     result = ([identifier length] == 32) && ([hexSet isSupersetOfSet:inStringSet]);
   }
-  
+
   return result;
 }
 
@@ -82,40 +82,40 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
 
 - (void)configureWithIdentifier:(NSString *)appIdentifier {
   self.appIdentifier = [appIdentifier copy];
-  
   [self initializeModules];
 }
 
 - (void)configureWithIdentifier:(NSString *)appIdentifier delegate:(id <BITHockeyManagerDelegate>)delegate {
   self.appIdentifier = [appIdentifier copy];
-  
+
   self.delegate = delegate;
-  
+
   [self initializeModules];
 }
 
 
 - (void)configureWithIdentifier:(NSString *)appIdentifier companyName:(NSString *) __unused companyName delegate:(id <BITHockeyManagerDelegate>)delegate {
   self.appIdentifier = [appIdentifier copy];
-  
+
   self.delegate = delegate;
-  
+
   [self initializeModules];
 }
 
 - (void)startManager {
   if (!self.validAppIdentifier || ![self isSetUpOnMainThread]) {
+      NSLog(@"DEBUG: non valid app id or not on main thread. %s, %d", __PRETTY_FUNCTION__, __LINE__);
     return;
   }
-  
+
   // Fix bug where Application Support directory was encluded from backup
   NSFileManager *fileManager = [NSFileManager defaultManager];
   NSURL *appSupportURL = [[fileManager URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
   bit_fixBackupAttributeForURL(appSupportURL);
-  
+
   BITHockeyLogDebug(@"INFO: Starting HockeyManager");
   self.startManagerIsInvoked = YES;
-  
+
   // start CrashManager
   if (![self isCrashManagerDisabled]) {
     BITHockeyLogDebug(@"INFO: Start CrashManager");
@@ -128,10 +128,10 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
   if (![aServerURL hasSuffix:@"/"]) {
     aServerURL = [NSString stringWithFormat:@"%@/", aServerURL];
   }
-  
+
   if (_serverURL != aServerURL) {
     _serverURL = [aServerURL copy];
-    
+
     if (self.hockeyAppClient) {
       self.hockeyAppClient.baseURL = [NSURL URLWithString:_serverURL ?: kBITHockeySDKURL];
     }
@@ -141,7 +141,7 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
 - (void)setDelegate:(id<BITHockeyManagerDelegate>)delegate {
   if (_delegate != delegate) {
     _delegate = delegate;
-    
+
     if (self.crashManager) {
       self.crashManager.delegate = delegate;
     }
@@ -196,7 +196,7 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
     } else {
       bit_addStringValueToKeychain(userEmail, kBITDefaultUserEmail);
     }
-  }  
+  }
 }
 
 #pragma mark - Private Instance Methods
@@ -205,22 +205,22 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
   if (!_hockeyAppClient) {
     _hockeyAppClient = [[BITHockeyAppClient alloc] initWithBaseURL:[NSURL URLWithString:self.serverURL ?: kBITHockeySDKURL]];
   }
-  
+
   return _hockeyAppClient;
 }
 
 - (void)initializeModules {
   self.validAppIdentifier = [self checkValidityOfAppIdentifier:self.appIdentifier];
-  
+
   if (![self isSetUpOnMainThread]) return;
-  
+
   self.startManagerIsInvoked = NO;
-  
+
   BITHockeyLogDebug(@"INFO: Setup CrashManager");
   self.crashManager = [[BITCrashManager alloc] initWithAppIdentifier:self.appIdentifier
                                                  hockeyAppClient:[self hockeyAppClient]];
   self.crashManager.delegate = self.delegate;
-  
+
   if ([self isCrashManagerDisabled])
     self.crashManager.crashManagerActivated = NO;
 }
