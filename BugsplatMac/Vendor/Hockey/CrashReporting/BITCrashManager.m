@@ -817,33 +817,42 @@ __attribute__((noreturn)) static void uncaught_cxx_exception_handler(const BITCr
                     if (self.crashReportUIHandler) {
                         self.crashReportUIHandler(crashReport, log);
                     } else {
+                        NSLog(@"%s: %d", __FUNCTION__, __LINE__);
                         self.crashReportUI = [[BITCrashReportUI alloc] initWithManager:self
                                                                            crashReport:crashReport
                                                                             logContent:log
                                                                        applicationName:[self applicationName]
                                                                         askUserDetails:self.askUserDetails];
-
+                        NSLog(@"%s: %d", __FUNCTION__, __LINE__);
                         [self.crashReportUI setUserName:[self userNameForCrashReport]];
                         [self.crashReportUI setUserEmail:[self userEmailForCrashReport]];
 
                         if (self.bannerImage) {
                             self.crashReportUI.imageView.image = self.bannerImage;
+                            NSLog(@"%s: %d", __FUNCTION__, __LINE__);
                         }
 
                         if (self.crashReportUI.nibDidLoadSuccessfully) {
+                            NSLog(@"%s: %d", __FUNCTION__, __LINE__);
                             [self.crashReportUI askCrashReportDetails];
 
                             if (self.presentModally) {
+                                NSLog(@"%s: %d", __FUNCTION__, __LINE__);
                                 [[NSApplication sharedApplication] runModalForWindow:self.crashReportUI.window];
+                                NSLog(@"%s: %d", __FUNCTION__, __LINE__);
                             }
                             else {
+                                NSLog(@"%s: %d", __FUNCTION__, __LINE__);
                                 [self.crashReportUI showWindow:self];
                                 [self.crashReportUI.window setLevel:NSNormalWindowLevel+1];
                                 [self.crashReportUI.window makeKeyAndOrderFront:self];
+                                NSLog(@"%s: %d", __FUNCTION__, __LINE__);
                             }
                         } else {
+                            NSLog(@"%s: %d", __FUNCTION__, __LINE__);
                             [self approveLatestCrashReport];
                             [self sendNextCrashReportAndShowSupportPage:NO];
+                            NSLog(@"%s: %d", __FUNCTION__, __LINE__);
                         }
                     }
                 } else {
